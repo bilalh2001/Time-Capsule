@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Capsule Social Network</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: black;
+            background-image: url('https://source.unsplash.com/1600x900/?galaxy,stars');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        h1 {
+            font-family: 'Poppins', sans-serif;
+            color: #ffcc00;
+            font-size: 2.5em;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5), 
+                         5px 5px 10px rgba(255, 204, 0, 0.3);
+        }
+        .quote {
+            font-family: 'Poppins', sans-serif;
+            color: #ffcc00;
+            font-size: 1.2em;
+            margin-top: 10px;
+            font-style: italic;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .quote-line {
+            width: 60%;
+            margin: 20px auto;
+            height: 2px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.6);
+            transform: perspective(200px) rotateX(10deg);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .delete-button {
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        .delete-button:hover {
+            background-color: #cc0000;
+        }
+        .section {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 200px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        }
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            padding: 10px 0;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    <script>
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+
+            // Hide the preview section when navigating away from the preview screen
+            if (sectionId !== 'timecapsule') {
+                document.getElementById('previewSection').style.display = 'none';
+            }
+        }
+        function setRecipient(type) {
+            if (type === 'self') {
+                document.getElementById('recipient').value = 'Myself';
+            } else {
+                document.getElementById('recipient').value = '';
+            }
+            showSection('timecapsule');
+        }
+        function showModal() {
+            document.getElementById('confirmationModal').style.display = 'block';
+        }
+        function hideModal() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+        function submitCapsule() {
+            const recipient = document.getElementById('recipient').value;
+            const message = document.getElementById('message').value;
+            const unlockDate = document.getElementById('unlockDate').value;
+            const timestamp = new Date().getTime();
+
+            const capsule = { recipient, message, unlockDate, timestamp };
+
+            let capsules = JSON.parse(localStorage.getItem('capsules')) || [];
+            capsules.push(capsule);
+            localStorage.setItem('capsules', JSON.stringify(capsules));
+
+            alert('Time capsule submitted successfully!');
+            hideModal();
+            showSection('home'); // Return to home page
+        }
+        function previewCapsule() {
+            const recipient = document.getElementById('recipient').value;
+            const message = document.getElementById('message').value;
+            const unlockDate = document.getElementById('unlockDate').value;
+
+            document.getElementById('previewRecipient').innerText = recipient; 
+            document.getElementById('previewMessage').innerText = message;
+            document.getElementById('previewDate').innerText = unlockDate;
+
+            document.getElementById('previewSection').style.display = 'block';
+        }
+        function showMyCapsules() {
+            const capsules = JSON.parse(localStorage.getItem('capsules')) || [];
+            const capsulesList = document.getElementById('capsulesList');
+            capsulesList.innerHTML = '';
+
+            if (capsules.length === 0) {
+                capsulesList.innerHTML = '<p>No time capsules found.</p>';
+                return;
+            }
+
+            capsules.forEach((capsule, index) => {
+                if (capsule.recipient === 'Myself') {
+                    const capsuleDiv = document.createElement('div');
+                    capsuleDiv.className = 'capsule';
+                    const formattedUnlockDate = new Date(capsule.unlockDate).toLocaleString();
+                    const formattedTimestamp = new Date(capsule.timestamp).toLocaleString();
+                    const maskedMessage = '*'.repeat(capsule.message.length);
+                    capsuleDiv.innerHTML = `
+                        <p><strong>Recipient:</strong> ${capsule.recipient}</p>
+                        <p><strong>Message:</strong> ${maskedMessage}</p>
+                        <p><strong>Unlock Date:</strong> ${formattedUnlockDate}</p>
+                        <p><strong>Submitted On:</strong> ${formattedTimestamp}</p>
+                        <button class="delete-button" onclick="deleteCapsule(${index})">Delete</button>
+                        <hr>
+                    `;
+                    capsulesList.appendChild(capsuleDiv);
+                }
+            });
+        }
+
+        function deleteCapsule(index) {
+            const capsules = JSON.parse(localStorage.getItem('capsules')) || [];
+            capsules.splice(index, 1);
+            localStorage.setItem('capsules', JSON.stringify(capsules));
+            showMyCapsules();
+        }
+
+        function signIn() {
+            const usernameEmail = document.getElementById('usernameEmail').value;
+            const password = document.getElementById('password').value;
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+
+            const user = users.find(user => (user.username === usernameEmail || user.email === usernameEmail) && user.password === password);
+
+            if (user) {
+                alert('Sign in successful!');
+                showSection('home');
+            } else {
+                alert('Error: Invalid username/email or password. Please register if you do not have an account.');
+            }
+        }
+
+        function register() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('registerPassword').value;
+
+            const users = JSON.parse(localStorage.getItem('users')) || [];
+            users.push({ firstName, lastName, email, username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+
+            alert('Registration successful!');
+            showSection('signIn');
+        }
+    </script>
+</head>
+<body>
+    <div class="sidebar">
+        <a onclick="showSection('home')">Home</a>
+        <a onclick="showSection('about')">About</a>
+        <a onclick="showSection('contact')">Contact Us</a>
+        <a onclick="showMyCapsules(); showSection('myCapsules')">My Capsules</a>
+    </div>
+    
+    <div class="container section" id="home" style="display: block;">
+        <h1>Welcome to Time Capsule</h1>
+        <p class="quote">"Write now, unlock later; your personal time capsule awaits."</p>
+        <div class="quote-line"></div>
+        <p>Create a message for the future and open it later!</p>
+        <button onclick="showSection('recipientChoice')">Create a Time Capsule</button>
+        <button onclick="showSection('signIn')">Sign In</button>
+    </div>
+
+    <!-- New intermediate page for recipient choice -->
+    <div class="container section" id="recipientChoice">
+        <h2>Who is this for?</h2>
+        <button onclick="setRecipient('self')">Send to Myself</button>
+        <button onclick="setRecipient('other')">Send to Another Recipient</button>
+    </div>
+    
+    <div class="container section" id="about">
+        <h2>About Time Capsule</h2>
+        <p>Welcome to Time Capsule, a digital space where you can send messages to the future. Whether you're leaving a note for yourself, a surprise for a loved one, or a special message for the world, our platform makes it easy and fun!</p>
+        <p>Simply create a time capsule, set the unlock date, and let time do the rest.</p>
+    </div>
+    
+    <div class="container section" id="contact">
+        <h2>Contact Us</h2>
+        <p>Have questions? Reach out to us at <a href="mailto:support@timecapsule.com" style="color:#ffcc00;">support@timecapsule.com</a></p>
+    </div>
+    
+    <div class="container section" id="timecapsule">
+        <h2>Create Your Time Capsule</h2>
+        <div class="form-container">
+            <label for="recipient">Recipient Name:</label>
+            <input type="text" id="recipient" placeholder="Enter recipient's name">
+            <label for="message">Message:</label>
+            <textarea id="message" rows="4" placeholder="Write your message here..."></textarea>
+            <label for="file">Upload a File or Image:</label>
+            <input type="file" id="file">
+            <label for="unlockDate">Unlock Date:</label>
+            <input type="date" id="unlockDate" required>
+            <button onclick="previewCapsule()">Preview Time Capsule</button>
+            <button onclick="showModal()">Submit Time Capsule</button>
+        </div> 
+    </div>
+
+    <!-- Sign In Section -->
+    <div class="container section" id="signIn">
+        <h2>Sign In</h2>
+        <div class="form-container">
+            <label for="usernameEmail">Username/Email:</label>
+            <input type="text" id="usernameEmail" placeholder="Enter your username or email">
+            <label for="password">Password:</label>
+            <input type="password" id="password" placeholder="Enter your password">
+            <button onclick="signIn()">Sign In</button>
+            <button onclick="showSection('register')">Register</button>
+        </div>
+    </div>
+
+    <!-- Register Section -->
+    <div class="container section" id="register">
+        <h2>Register</h2>
+        <div class="form-container">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" placeholder="Enter your first name">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" placeholder="Enter your last name">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email">
+            <label for="username">Username:</label>
+            <input type="text" id="username" placeholder="Enter your username">
+            <label for="registerPassword">Password:</label>
+            <input type="password" id="registerPassword" placeholder="Enter your password">
+            <button onclick="register()">Register</button>
+        </div>
+    </div>
+
+    <!-- Preview Section -->
+    <div id="previewSection" style="display: none; margin-top: 20px; padding: 10px; background: rgba(255, 255, 255, 0.2); border-radius: 10px;">
+        <h3>Preview</h3>
+        <p><strong>Recipient:</strong> <span id="previewRecipient"></span></p>
+        <p><strong>Message:</strong> <span id="previewMessage"></span></p>
+        <p><strong>Unlock Date:</strong> <span id="previewDate"></span></p>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.9); padding: 20px; border-radius: 10px; color: white; text-align: center;">
+        <p>Are you sure you want to submit this time capsule?</p>
+        <button onclick="submitCapsule()">Yes, Submit</button>
+        <button onclick="hideModal()">Cancel</button>
+    </div>
+
+    <div class="container section" id="myCapsules">
+        <h2>My Time Capsules</h2>
+        <div id="capsulesList"></div>
+    </div>
+    
+    <div class="footer">
+        <p>Created by Bilal Haider © 2025</p>
+    </div>
+</body>
+</html>
