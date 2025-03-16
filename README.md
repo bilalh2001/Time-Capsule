@@ -20,37 +20,4 @@ As a work in progress, I'm continuously enhancing the platform's functionality a
 <h2>Environments Used</h2>
 
 - <b>Web Browser</b> (Google Chrome, Firefox, etc.)
-
-<h2>Program walk-through:</h2>
-
-<p align="center">
-Landing Page: <br/>
-<img src="https://i.imgur.com/example1.png" height="80%" width="80%" alt="Time Capsule Landing Page"/>
-<br />
-<br />
-Message Input Form:  <br/>
-<img src="https://i.imgur.com/example2.png" height="80%" width="80%" alt="Message Input Form"/>
-<br />
-<br />
-Select Delivery Date: <br/>
-<img src="https://i.imgur.com/example3.png" height="80%" width="80%" alt="Select Delivery Date"/>
-<br />
-<br />
-Confirmation Page:  <br/>
-<img src="https://i.imgur.com/example4.png" height="80%" width="80%" alt="Confirmation Page"/>
-<br />
-<br />
-Scheduled Message Overview:  <br/>
-<img src="https://i.imgur.com/example5.png" height="80%" width="80%" alt="Scheduled Message Overview"/>
-</p>
-
-<!--
- 
-diff
-- text in red
-+ text in green
-! text in orange
-# text in gray
-@@ text in purple (and bold)@@
-
--->
+- <b>Visual Studio Code</b> 
