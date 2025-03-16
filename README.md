@@ -1,7 +1,5 @@
 <h1>Time Capsule - Digital Message Scheduler</h1>
 
-### [YouTube Demonstration](https://youtu.be/your-video-link)
-
 <h2>Description</h2>
 The Time Capsule is a unique social media concept developed by me, designed to allow users to create and schedule digital messages for future delivery. Built using HTML and CSS, this platform features a sleek user interface, interactive recipient selection, and secure message storage. The project aims to help users capture memories, thoughts, and messages for future moments.
 
